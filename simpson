@@ -1,0 +1,29 @@
+package vishmat;
+
+public class Simpson {
+    // Функция, для которой вычисляется интеграл
+    public static double function(double x) {
+        return Math.sin(x);
+    }
+
+    // Метод Симпсона для вычисления интеграла
+    public static double simpsonMethod(double a, double b, int n) {
+        double step = (b - a) / n; // размер шага
+        double sum = function(a) + function(b); // сумма по краям
+        for (int i = 1; i < n; i += 2) { // сумма по нечетным
+            sum += 4 * function(a + i * step);
+        }
+        for (int i = 2; i < n; i += 2) { // сумма по четным
+            sum += 2 * function(a + i * step);
+        }
+        return sum * step / 3; // окончательный результат
+    }
+
+    public static void main(String[] args) {
+        double a = 0; // начальное значение интервала
+        double b = Math.PI / 2; // конечное значение интервала
+        int n = 100; // количество разбиений
+        double result = simpsonMethod(a, b, n); // вычисление интеграла
+        System.out.println("Результат: " + result); // вывод результата
+    }
+}
