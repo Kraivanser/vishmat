@@ -1,0 +1,20 @@
+public class Integrator {
+    public static double integrate(double a, double b, int n, Function<Double, Double> f) {
+        double dx = (b - a) / n;
+        double sum = 0;
+        for (int i = 0; i < n; i++) {
+            double x = a + i * dx;
+            sum += f.apply(x);
+        }
+        return sum * dx;
+    }
+
+    public static void main(String[] args) {
+        double a = 0;
+        double b = 1;
+        int n = 1000;
+        Function<Double, Double> f = Math::cos;
+        double result = integrate(a, b, n, f);
+        System.out.println("Result: " + result);
+    }
+}
