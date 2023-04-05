@@ -1,0 +1,25 @@
+public class DichotomyMethod {
+    public static void main(String[] args) {
+        double a = 0, b = 1, eps = 0.0001; // границы отрезка и точность
+        double x = dichotomyMethod(a, b, eps);
+        System.out.println("x = " + x);
+    }
+
+    public static double f(double x) { // заданная функция
+        return x * x - 4;
+    }
+
+    public static double dichotomyMethod(double a, double b, double eps) {  
+        while (Math.abs(b - a) >= eps) { // цикл до достижения заданной точности
+            double x = (a + b) / 2; // находим середину отрезка
+            if (f(x) == 0) { // если значение функции в точке x равно 0, то x - корень функции
+                return x;
+            } else if (f(a) * f(x) < 0) { // проверка знака функции на отрезке [a, x]
+                b = x; // перезаписываем b
+            } else { // проверка знака функции на отрезке [x, b]
+                a = x; // перезаписываем a
+            }
+        }
+        return (a + b) / 2; // возвращаем середину отрезка с заданной точностью
+    }
+}
