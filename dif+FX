@@ -1,0 +1,69 @@
+package com.example.javafx;
+
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
+import static java.lang.Math.*;
+
+public class javafx extends Application {
+    private static double[] x1 = new double[50];
+    private static double[] x2 = new double[50];
+    private static double[] y = new double[50];
+    private static double[] y1 = new double[50];
+    private static double[] y2 = new double[50];
+    private static double[] y3 = new double[50];
+    private static int j = 0;
+
+    @Override
+    public void start(Stage primaryStage) {                           // создание окна
+        final NumberAxis xAxi = new NumberAxis(-5, 5, 0.05);    //Для осей X Y
+        final NumberAxis yAxi = new NumberAxis(-5, 5, 0.05);
+        final ScatterChart<Number, Number> scatterChart = new ScatterChart<>(xAxi, yAxi);
+
+        dif();
+
+        final XYChart.Series<Number, Number> data = new XYChart.Series<>();
+        for (int i = 0;i < j; i++) {
+            data.getData().add(new XYChart.Data<>(x2[i], y2[i]));            // отрицательные
+        }
+        data.setName("y=x^4");        // подпись функции
+        scatterChart.getData().add(data);
+
+        final XYChart.Series<Number, Number> data2 = new XYChart.Series<>();
+        for (int i = 0;i < j; i++) {
+            data2.getData().add(new XYChart.Data<>(x1[i], y3[i]));     // положительные
+        }
+        scatterChart.getData().add(data2);
+
+        final Scene scene = new Scene(scatterChart, 1280, 720);   // размер окна
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+
+    private static void dif(){  // метод конечных разностей
+        double h = -PI/12;
+        double hh = PI/12;
+        double h1 = 0.00001;
+
+        for(int i = 0;i<30;i++){
+            y[j] = f(h*i);
+            y1[j] = f(h*i+h1);
+            x1[j] = hh*i;
+            x2[j] = h*i;
+            y2[j] = (y1[i]-y[i])/h1;
+            y3[j] = -(y1[i]-y[i])/h1;
+            j++;
+        }
+    }
+    private static double f(double x){
+        return Math.pow(x,4);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
