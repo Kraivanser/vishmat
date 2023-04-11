@@ -1,0 +1,70 @@
+package com.example.javafx;
+
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.ScatterChart;
+import javafx.scene.chart.XYChart;
+import javafx.stage.Stage;
+
+import static java.lang.Math.PI;
+
+public class dih extends Application {
+    private static double[] x1 = new double[50];
+    private static double[] y = new double[50];
+    private static int j = 0;
+    @Override
+    public void start(Stage primaryStage) {                           // создание окна
+        final NumberAxis xAxi = new NumberAxis(-5, 5, 0.05);    //Для осей X Y
+        final NumberAxis yAxi = new NumberAxis(-5, 5, 0.05);
+        final ScatterChart<Number, Number> scatterChart = new ScatterChart<>(xAxi, yAxi);
+        
+        vivod();
+
+        final XYChart.Series<Number, Number> data = new XYChart.Series<>();
+        for (int i = 0;i < j; i++) {
+            data.getData().add(new XYChart.Data<>(x1[i], y[i]));
+        }
+        data.setName("y=x^4");        // подпись функции
+        scatterChart.getData().add(data);
+
+        final Scene scene = new Scene(scatterChart, 1280, 720);   // размер окна
+        primaryStage.setScene(scene);
+        primaryStage.show();
+    }
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    public static double f(double x) { // заданная функция
+        return x * x - 4;
+    }
+
+    public static double dichotomyMethod(double a, double b, double eps) {
+        while (Math.abs(b - a) >= eps) { // цикл до достижения заданной точности
+            double x = (a + b) / 2; // находим середину отрезка
+            if (f(x) == 0) { // если значение функции в точке x равно 0, то x - корень функции
+                return x;
+            } else if (f(a) * f(x) < 0) { // проверка знака функции на отрезке [a, x]
+                b = x; // перезаписываем b
+            } else { // проверка знака функции на отрезке [x, b]
+                a = x; // перезаписываем a
+            }
+        }
+        return (a + b) / 2; // возвращаем середину отрезка с заданной точностью
+    }
+    public static void vivod(){
+        double a = 0, b = 1, eps = 0.0001; // границы отрезка и точность
+        double x = dichotomyMethod(a, b, eps);
+        System.out.println("x = " + x);
+        double h = -PI/12;
+        double hh = PI/12;
+        double h1 = 0.00001;
+
+        for(int i = 0;i<30;i++) {
+            y[j] = f(h * i);
+            x1[j] = hh * i;
+            j++;
+        }
+    }
+}
