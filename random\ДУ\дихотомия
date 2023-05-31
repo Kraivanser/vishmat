@@ -1,0 +1,134 @@
+import numpy as np
+import random
+
+n = 10**6
+x = [random.randint(0, 100) for _ in range(n)] # создание случайных чисел в диапазоне от 0 до 100 в количестве 1000000
+
+# вычисляем вероятности для каждого числа
+unique_nums, counts = np.unique(x, return_counts=True)
+probs = counts / n
+
+# вычисляем математическое ожидание и дисперсию
+mean = np.mean(x)
+variance = np.var(x)
+
+# выводим результаты для каждого числа
+for num, prob in zip(unique_nums, probs):
+    print(f'Число {num}: вероятность {prob:.4f}, математическое ожидание {mean:.4f}, дисперсия {variance:.4f}')
+
+# создаем список вероятностей для чисел от 0 до 100
+prob_list = [probs[i] for i in range(101)]
+print(prob_list)
+def count_substring_prob(substring, x):
+    # считаем количество вхождений подстроки в список чисел x
+    count = 0
+    for i in range(len(x) - len(substring) + 1):
+        if x[i:i+len(substring)] == substring:
+            count += 1
+    # вычисляем вероятность по количеству вхождений и размеру списка
+    prob = count / len(x)
+    return count, prob
+
+# пример использования функции
+substring = '42'
+if substring in x:
+    count, prob = count_substring_prob(substring, x)
+    print(f'Подстрока "{substring}" встречается {count} раз, вероятность ее вхождения: {prob:.6f}')
+else:
+    print(f'Подстрока "{substring}" не найдена в списке.')
+    ---------------------
+    import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import odeint # библиотека для решения ДУ 1 порядка
+
+#Определим функцию-систему дифференциальных уравнений
+def system(y, x):
+    y0, y1 = y    # задаем значения y0'=y1
+    dydx = [y1, -y1 - y0 +x]  # y1'=-y1-y0
+    return dydx
+
+#Зададим начальные условия и интервал, на котором будем решать уравнение
+y0 = [0, 1] # y(0) = 1, y'(0) = 0
+x = np.linspace(-10, 10, 1000)
+
+#Решим уравнение
+sol = odeint(system, y0, x)
+
+#Построим график
+plt.plot(x, sol[:, 0], 'b', label='y(x)') # функция y(x) на график
+plt.plot(x, sol[:, 1], 'g', label="y'(x)")
+plt.legend(loc='best') # добавление легенды
+plt.xlabel('x')
+plt.grid()
+plt.show()
+-------------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+def dichotomy(f, a, b, eps):
+    while abs(b - a) > eps: # начало цикла while, который будет выполняться до тех пор, пока разность между границами интервала b и a больше заданной точности eps
+        c = (a + b) / 2 # вычисление середины отрезка.
+        if f(c) == 0: # если значение функции в точке c равно 0, то сразу возвращается значение c, так как это и есть корень уравнения.
+            return c
+        elif f(c) * f(a) < 0: # если значение функции в точке c и границе интервала a имеют разные знаки, то корень уравнения находится в левой половине отрезка, и правая граница b становится равной c
+            b = c
+        else: # в остальных случаях, когда значение функции в точке c и границе интервала a имеют одинаковый знак, корень уравнения находится в правой половине отрезка, и левая граница a становится равной c
+            a = c
+    return (a + b) / 2 # после окончания цикла while, когда разность между границами интервала становится меньше или равной заданной точности eps, вычисляется и возвращается среднее значение на отрезке [a, b] как приближенное решение уравнения.
+
+f = lambda x: np.cos(x)
+a, b = 0, 2
+eps = 1e-6
+
+x_values = np.random.uniform(low=a, high=b, size=10000) # Генерация 10000 случайных чисел в интервале [0, 2]
+
+y_values = f(x_values) # Вычисление значений функции в этих точках
+
+solution = dichotomy(f, a, b, eps) # Поиск корней с помощью метода дихотомии и сохранение в списке solutions
+print(f"Solution: x = {solution}")
+solutions = []
+for x in x_values:
+    solution = dichotomy(f, a, b, eps)
+solutions.append(solution)
+
+x_plot = np.linspace(a, b, 1000) # a,b - границы графика. 1000 - размер
+y_plot = f(x_plot) # вычисление значений функции f для каждого значения аргумента x_plot
+
+plt.plot(x_plot, y_plot) # построение графика функции
+plt.grid() # добавление сетки на график
+plt.axhline(y=0, color='k') # добавление горизонтальной линии (ось X) на график в точке y=0. Цвет линии задан черным
+plt.xlabel('x') # добавление подписи к оси X, Y
+plt.ylabel('y')
+plt.title('f(x)') # добавление заголовка графика
+plt.show() # вывод на экран
+------------------------------
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Определение дифференциального уравнения
+def f(x, y):
+return 2*x + 3*y + 1
+
+# Задание начальных условий
+x0 = 0
+y0 = 1
+
+# Задание интервала интегрирования и шага
+a = 0
+b = 1
+h = 0.1
+
+# Определение массивов для значений x и y
+x = np.arange(a, b+h, h) # массив от а до b с шагом h
+y = np.zeros(len(x)) # пустой массив для заполнения функции
+y[0] = y0
+
+# Решение дифференциального уравнения методом Эйлера
+for i in range(1, len(x)):
+y[i] = y[i-1] + h*f(x[i-1], y[i-1])
+
+# Построение графика решения
+plt.plot(x, y)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.show()
